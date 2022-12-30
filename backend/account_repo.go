@@ -51,6 +51,18 @@ func (repo *AccountRepo) Find(name string) (*Account, error) {
 }
 
 func (repo *AccountRepo) Delete(name string) error {
+	newAccounts := []*Account{}
+
+	account, _ := repo.Find(name)
+	account.Delete()
+
+	for _, value := range repo.accounts {
+		if value.Name != name {
+			newAccounts = append(newAccounts, value)
+		}
+	}
+
+	repo.accounts = newAccounts
 
 	return nil
 }

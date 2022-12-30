@@ -14,10 +14,7 @@ func (app *App) ListAccount() []*Account {
 }
 
 func (app *App) DeleteAccount(name string) {
-
-	akun, _ := app.akunRepo.Find(name)
-
-	akun.Delete()
+	app.akunRepo.Delete(name)
 }
 
 func (app *App) RefreshAccount() {}

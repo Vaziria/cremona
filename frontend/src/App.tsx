@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { AddAccount, ListAccount } from '../wailsjs/go/backend/App'
+import { AddAccount, DeleteAccount, ListAccount } from '../wailsjs/go/backend/App'
 import { backend } from '../wailsjs/go/models';
 
 function App() {
@@ -7,7 +7,11 @@ function App() {
     const [ listAkuns, setAkuns ] = useState<backend.Account[]>([])
     const updateName = (e: any) => setName(e.target.value);
 
-    
+    function deleteAccount(name: string) {
+        DeleteAccount(name).then(() => {
+            ListAccount().then(result => setAkuns(result))
+        })
+    }
 
     function add() {
         AddAccount(name).then(() => {
@@ -31,7 +35,7 @@ function App() {
             {
                 listAkuns.map(akun => {
                     return <div key={akun.name}>
-                        <div>{akun.name} ( {akun.chat_data.chat_unread} )</div> <button>delete</button> <button>refresh</button>
+                        <div>{akun.name} ( {akun.chat_data.chat_unread} )</div> <button onClick={() => deleteAccount(akun.name)}>delete</button> <button>refresh</button>
                     </div> 
                     
                 })
