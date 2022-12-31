@@ -10,10 +10,16 @@ type ChatData struct {
 	ChatUnread int32 `json:"chat_unread"`
 }
 
+type ACookie struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 type Account struct {
-	Name     string   `json:"name"`
-	ChatData ChatData `json:"chat_data"`
-	// Cookies  []http.Cookie `json:"cookies"`
+	Name     string    `json:"name"`
+	ChatData ChatData  `json:"chat_data"`
+	Cookies  []ACookie `json:"cookies"`
+	Username string    `json:"username"`
 }
 
 func NewFromJson(pathname string) Account {

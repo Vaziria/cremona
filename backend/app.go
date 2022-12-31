@@ -9,6 +9,7 @@ import (
 type App struct {
 	ctx      context.Context
 	akunRepo *AccountRepo
+	Browser  *Browser
 }
 
 // NewApp creates a new App application struct
@@ -27,8 +28,13 @@ func NewApp() *App {
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) Startup(ctx context.Context) {
-	a.ctx = ctx
+	config := NewConfigProxy()
+	browser := NewBrowser(config.Addr)
 
+	go StartProxy(config)
+
+	a.ctx = ctx
+	a.Browser = browser
 }
 
 func init() {
