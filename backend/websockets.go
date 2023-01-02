@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/schema"
 	"github.com/gorilla/websocket"
+	"github.com/pierrec/lz4/v4"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -181,7 +182,32 @@ func (akun *Account) CreateWebsocket() {
 				return
 			}
 
-			log.Println("message socket", dataframe.Payload)
+			truePayload := make([]byte, len(dataframe.Payload))
+
+			_, err = lz4.UncompressBlock(dataframe.Payload, truePayload)
+			if err != nil {
+				log.Println(err)
+			}
+
+			fmt.Println("\ndecompressed Data:", truePayload)
+
+			// for _, b := range dataframe.Payload {
+			// 	fmt.Printf("%02x ", b)
+			// }
+			// fmt.Println()
+
+			// log.Println("payload", dataframe.PayloadType, dataframe.PayloadEncoding)
+
+			var response Response
+
+			err = proto.Unmarshal(truePayload, &response)
+
+			if err != nil {
+				log.Println("parse response payload error:", err)
+				return
+			}
+
+			log.Println("message socket", &response)
 		}
 	}()
 

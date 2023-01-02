@@ -936,7 +936,7 @@ message GetMessageByIdRequestBody {
 
 message GetMessageByIdResponseBody {
 
-	
+	MessageInfo msg_info = 1;
 
 }
 

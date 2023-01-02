@@ -32,7 +32,7 @@ type ShopCsInfoData struct {
 	ShopTimezone        string              `json:"shopTimezone"`
 }
 
-type Response[T any] struct {
+type ResponseApi[T any] struct {
 	Code    int16  `json:"code"`
 	Data    T      `json:"data"`
 	Message string `json:"message"`
@@ -55,7 +55,7 @@ var defaultHeader = map[string][]string{
 func (s *Account) GetShopAndCsInfo() ShopCsInfoData {
 
 	url := "https://seller-id.tiktok.com/chat/api/seller/getShopAndCsInfo?PIGEON_BIZ_TYPE=1&aid=4068"
-	var resdata Response[ShopCsInfoData]
+	var resdata ResponseApi[ShopCsInfoData]
 
 	req, err := http.NewRequest("GET", url, nil)
 	client := &http.Client{}
@@ -105,7 +105,7 @@ type TokenData struct {
 }
 
 func (s *Account) GetTokenInfo(sellerId string) TokenData {
-	var resdata Response[TokenData]
+	var resdata ResponseApi[TokenData]
 
 	url := "https://seller-id.tiktok.com/chat/api/seller/token?PIGEON_BIZ_TYPE=1&oec_region=ID&aid=4068&oec_seller_id=" + sellerId
 	req, err := http.NewRequest("GET", url, nil)

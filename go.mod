@@ -6,6 +6,7 @@ require (
 	github.com/gorilla/schema v1.2.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/kardianos/mitmproxy v0.0.0-20220918004918-f6fc4ef7f430
+	github.com/pierrec/lz4/v4 v4.1.17
 	github.com/tebeka/selenium v0.9.9
 	github.com/wailsapp/wails/v2 v2.3.1
 	google.golang.org/protobuf v1.28.1

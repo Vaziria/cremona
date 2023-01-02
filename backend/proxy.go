@@ -29,7 +29,7 @@ func (addon *AuthGetter) Response(flow *proxy.Flow) {
 	u := flow.Request.URL.Path
 
 	if strings.Contains(u, "/seller/token") {
-		var resdata Response[TokenData]
+		var resdata ResponseApi[TokenData]
 		data, err := flow.Response.DecodedBody()
 
 		if err != nil {
