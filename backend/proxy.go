@@ -30,8 +30,17 @@ func (addon *AuthGetter) Response(flow *proxy.Flow) {
 
 	if strings.Contains(u, "/seller/token") {
 		var resdata Response[TokenData]
+		data, err := flow.Response.DecodedBody()
 
-		json.Unmarshal(flow.Response.Body, &resdata)
+		if err != nil {
+			log.Fatalln("cannot decode body proxy response")
+		}
+
+		err = json.Unmarshal(data, &resdata)
+		if err != nil {
+			log.Println(err)
+		}
+
 		TokenChan <- resdata.Data
 
 	}

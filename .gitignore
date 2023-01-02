@@ -1,4 +1,8 @@
+chrodriver.exe
 build/bin
 node_modules
 frontend/dist
 data/account/
+data/profiles/*
+data/profile/*
+chromedriver.exe

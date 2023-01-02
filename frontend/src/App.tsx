@@ -54,7 +54,7 @@ function App() {
                     direction: "incoming",
                     position: "single"
                 }}>
-                    <Avatar name="Zoe" />
+                    <Avatar name="Zoe" src='https://bit.ly/kent-c-dodds' />
                 </Message>
                     
                 <Message model={{

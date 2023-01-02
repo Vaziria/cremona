@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type SellerApi struct {
-	Akun *Akun
-}
-
 type CustomerServiceInfo struct {
 	PigeonCid  string `json:"pigeonCid"`
 	ScreenName string `json:"screenName"`
@@ -56,7 +52,7 @@ var defaultHeader = map[string][]string{
 	"User-Agent":         {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"},
 }
 
-func (s *SellerApi) GetShopAndCsInfo() ShopCsInfoData {
+func (s *Account) GetShopAndCsInfo() ShopCsInfoData {
 
 	url := "https://seller-id.tiktok.com/chat/api/seller/getShopAndCsInfo?PIGEON_BIZ_TYPE=1&aid=4068"
 	var resdata Response[ShopCsInfoData]
@@ -68,8 +64,11 @@ func (s *SellerApi) GetShopAndCsInfo() ShopCsInfoData {
 		panic("error create request")
 	}
 
-	for _, value := range s.Akun.Cookies {
-		req.AddCookie(&value)
+	for _, value := range s.Cookies {
+		req.AddCookie(&http.Cookie{
+			Name:  value.Name,
+			Value: value.Value,
+		})
 	}
 
 	for key, value := range defaultHeader {
@@ -105,7 +104,7 @@ type TokenData struct {
 	ApiUrl       string `json:"apiUrl"`
 }
 
-func (s *SellerApi) GetTokenInfo(sellerId string) TokenData {
+func (s *Account) GetTokenInfo(sellerId string) TokenData {
 	var resdata Response[TokenData]
 
 	url := "https://seller-id.tiktok.com/chat/api/seller/token?PIGEON_BIZ_TYPE=1&oec_region=ID&aid=4068&oec_seller_id=" + sellerId
@@ -116,8 +115,11 @@ func (s *SellerApi) GetTokenInfo(sellerId string) TokenData {
 		panic("error create request")
 	}
 
-	for _, value := range s.Akun.Cookies {
-		req.AddCookie(&value)
+	for _, value := range s.Cookies {
+		req.AddCookie(&http.Cookie{
+			Name:  value.Name,
+			Value: value.Value,
+		})
 	}
 
 	for key, value := range defaultHeader {

@@ -31,6 +31,8 @@ export namespace backend {
 	    chat_data: ChatData;
 	    cookies: ACookie[];
 	    username: string;
+	    device_id: string;
+	    tokenid: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Account(source);
@@ -42,6 +44,8 @@ export namespace backend {
 	        this.chat_data = this.convertValues(source["chat_data"], ChatData);
 	        this.cookies = this.convertValues(source["cookies"], ACookie);
 	        this.username = source["username"];
+	        this.device_id = source["device_id"];
+	        this.tokenid = source["tokenid"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

@@ -18,7 +18,7 @@ import (
 var encoder = schema.NewEncoder()
 var appkey = "b42d99769353ce6304e74fb597e36e90"
 
-func cookieString(cookies []http.Cookie) string {
+func cookieString(cookies []ACookie) string {
 	var hasil string
 
 	for _, value := range cookies {
@@ -55,9 +55,15 @@ func NewSocketQuery() SocketQuery {
 	}
 }
 
-func (akun *Akun) createQuery() *SocketQuery {
+func (akun *Account) createQuery() *SocketQuery {
 
 	query := NewSocketQuery()
+
+	// shopInfo := akun.GetShopAndCsInfo()
+	// tokeninfo := akun.GetTokenInfo(shopInfo.CustomerServiceInfo.OuterCid)
+
+	// query.Token = tokeninfo.Token
+	// query.DeviceId = tokeninfo.PigeonCid
 
 	query.Token = akun.Token
 	query.DeviceId = akun.DeviceId
@@ -69,7 +75,7 @@ func (akun *Akun) createQuery() *SocketQuery {
 
 }
 
-func (akun *Akun) createUrl() *url.URL {
+func (akun *Account) createUrl() *url.URL {
 	query := akun.createQuery()
 	q := url.Values{}
 
@@ -90,7 +96,7 @@ func (akun *Akun) createUrl() *url.URL {
 	return &u
 }
 
-func (akun *Akun) createPing() []byte {
+func (akun *Account) createPing() []byte {
 
 	data := &Request{
 		Headers:        map[string]string{},
@@ -133,7 +139,7 @@ func (akun *Akun) createPing() []byte {
 	return hasil
 }
 
-func (akun *Akun) CreateWebsocket() {
+func (akun *Account) CreateWebsocket() {
 	u := akun.createUrl()
 
 	requester := http.Header{
@@ -199,5 +205,11 @@ func (akun *Akun) CreateWebsocket() {
 			}
 
 		}
+	}
+}
+
+func StartWebsocketAll(akuns []*Account) {
+	for _, value := range akuns {
+		go value.CreateWebsocket()
 	}
 }

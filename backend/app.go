@@ -32,6 +32,7 @@ func (a *App) Startup(ctx context.Context) {
 	browser := NewBrowser(config.Addr)
 
 	go StartProxy(config)
+	StartWebsocketAll(a.akunRepo.accounts)
 
 	a.ctx = ctx
 	a.Browser = browser

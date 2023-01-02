@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"time"
 )
 
 type ChatData struct {
@@ -20,6 +21,8 @@ type Account struct {
 	ChatData ChatData  `json:"chat_data"`
 	Cookies  []ACookie `json:"cookies"`
 	Username string    `json:"username"`
+	DeviceId string    `json:"device_id"`
+	Token    string    `json:"tokenid"`
 }
 
 func NewFromJson(pathname string) Account {
@@ -58,5 +61,30 @@ func (ac *Account) Delete() {
 	e := os.Remove(fname)
 	if e != nil {
 		log.Fatal(e)
+	}
+}
+
+func (ac *Account) GetCookies(browser *Browser) {
+	profile := locProfile + ac.Name
+	driver := browser.CreateDriver(profile)
+	defer driver.Close()
+
+	driver.Get("https://seller-id.tiktok.com/chat")
+	time.Sleep(5 * time.Second)
+
+	token := <-TokenChan
+	log.Println(token)
+
+	ac.Token = token.Token
+	ac.DeviceId = token.PigeonCid
+
+	cookies := getHttpCookies(driver)
+	ac.Cookies = make([]ACookie, len(cookies))
+
+	for key, value := range cookies {
+		ac.Cookies[key] = ACookie{
+			Name:  value.Name,
+			Value: value.Value,
+		}
 	}
 }

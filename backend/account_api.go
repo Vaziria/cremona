@@ -4,8 +4,9 @@ func (app *App) AddAccount(name string) *Account {
 	akun := &Account{
 		Name: name,
 	}
-
+	akun.GetCookies(app.Browser)
 	akun.Save()
+
 	return app.akunRepo.Add(akun)
 }
 
