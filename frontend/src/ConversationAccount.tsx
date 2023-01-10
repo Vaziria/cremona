@@ -5,7 +5,7 @@ import {
     useQuery, useQueryClient,
 } from 'react-query'
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { backend } from "../wailsjs/go/models"
 import { useRecoilValue } from "recoil"
 import { searchState } from "./state/search"
@@ -34,6 +34,12 @@ function ConversationAccount() {
     const search = useRecoilValue(searchState)
     const [ activeAccount, setActiveAccount ] = useState<backend.Account | null>()
     const query = useQuery("list_conversation", ListAccount)
+
+    useEffect(() => {
+        (window as any).runtime.EventsOn("message", (data: any) => {
+            console.log(data)
+        })
+    }, [])
 
     return <ConversationList>
         {

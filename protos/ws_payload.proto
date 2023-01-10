@@ -30,11 +30,107 @@ message MessagesPerUserInitV2RequestBody {
 
 }
 
+message ReferencedMessageInfo {
+
+	int64 referenced_message_id = 1;
+	string hint = 2;
+	int64 root_message_id = 3;
+	int64 root_message_conv_index = 4;
+
+}
+
+message SendMessageRequestBody {
+
+	string conversation_id = 1;
+	int32 conversation_type = 2;
+	int64 conversation_short_id = 3;
+	string content = 4;
+	map<string, string> ext = 5;
+	int32 message_type = 6;
+	string ticket = 7;
+	string client_message_id = 8;
+	repeated int64 mentioned_users = 9;
+	ReferencedMessageInfo ref_msg_info = 11;
+
+}
 
 
 message RequestBody {
 
-    MessagesPerUserInitV2RequestBody messages_per_user_init_v2_body = 203;
+    
+
+	SendMessageRequestBody send_message_body = 100;
+	MessagesPerUserRequestBody messages_per_user_body = 200;
+	MessagesPerUserInitV2RequestBody messages_per_user_init_v2_body = 203;
+	GetMessageByIdRequestBody get_message_by_id_body = 211;
+	MessagesInConversationRequestBody messages_in_conversation_body = 301;
+	GetMessagesCheckInfoInConversationRequestBody get_messages_checkinfo_in_conversation_body = 302;
+	SendUserActionRequestBody send_user_action_body = 410;
+	SendInputStatusRequestBody send_input_status_body = 411;
+	DeleteConversationRequestBody delete_conversation_body = 603;
+	MarkConversationReadRequestBody mark_conversation_read_body = 604;
+	ConversationParticipantsListRequestBody conversation_participants_body = 605;
+	DissolveConversationRequestBody dissolve_conversation_body = 614;
+
+	// 609
+	// 610
+	// 611
+	// 612
+
+	ConversationAddParticipantsRequestBody conversation_add_participants_body = 650;
+	ConversationRemoveParticipantsRequestBody conversation_remove_participants_body = 651;
+	ConversationLeaveRequestBody leave_conversation_body = 652;
+	UpdateConversationParticipantRequestBody update_conversation_participant_body = 655;
+	DeleteMessageRequestBody delete_message_body = 701;
+	RecallMessageRequestBody recall_message_body = 702;
+	ModifyMessagePropertyRequestBody modify_message_property_body = 705;
+	GetConversationCoreInfoRequestBody get_conversation_core_info_body = 901;
+	SetConversationCoreInfoRequestBody set_conversation_core_info_body = 902;
+	UpsertConversationCoreExtInfoRequestBody upsert_conversation_core_ext_info_body = 904;
+	SetConversationSettingInfoRequestBody set_conversation_setting_info_body = 921;
+	UpsertConversationSettingExtInfoRequestBody upsert_conversation_setting_ext_info_body = 922;
+
+	// 483
+
+	GetStrangerMessagesRequestBody get_stranger_messages_body = 1001;
+	DeleteStrangerMessageRequestBody delete_stranger_message_body = 1002;
+	DeleteStrangerConversationRequestBody delete_stranger_conversation_body = 1003;
+	DeleteStrangerAllConversationRequestBody delete_stranger_all_conversation_body = 1004;
+	MarkStrangerConversationReadRequestBody mark_stranger_conversation_read_body = 1005;
+	MarkStrangerAllConversationReadRequestBody mark_stranger_all_conversation_read_body = 1006;
+	// 739
+	// 2001
+
+	GetUploadTokenRequestBody get_upload_token_body = 2003;
+	GetMediaUrlsRequestBody get_media_urls_body = 2004;
+	GetTicketRequestBody get_ticket_body = 2005;
+	GetUserConversationListRequestBody get_conversation_list_body = 2006;
+	BroadcastSendMessageRequestBody broadcast_send_message_body = 2007;
+	BroadcastRecvMessageRequestBody broadcast_recv_message_body = 2008;
+	BroadcastUserCounterRequestBody broadcast_user_counter_body = 2009;
+	ClientACKRequestBody client_ack_body = 2010;
+	CreateVoipRequestBody create_voip_body = 2011;
+	CallVoipRequestBody call_voip_body = 2012;
+	UpdateVoipRequestBody update_voip_body = 2013;
+	ChannelHeartBeatRequestBody channel_heartbeat_body = 2014;
+	ProfileGetInfoRequestBody profile_get_info = 2015;
+	ReportClientMetricsRequestBody report_client_metrics_body = 2016;
+	GetConfigsRequestBody get_configs_body = 2017;
+	ModifyMessageExtRequestBody modify_message_ext_body = 2021;
+	UnReadCountReportRequestBody unread_count_report_body = 2018;
+	BlockMembersRequestBody block_members_body = 2019;
+	BlockConversationRequestBody block_conversation_body = 2020;
+	GetUnreadCountRequestBody get_unread_count_body = 2030;
+
+	// 2031
+	GetBlockListRequestBody get_blocklist_body = 2032;
+	SetBlocklistRequestBody set_blocklist_body = 2033;
+	CheckInBlockListRequestBody check_in_blocklist_body = 2034;
+	MarkMessageRequestBody mark_message_body = 2036;
+	PullMarkMessageRequestBody pull_mark_message_body = 2037;
+	MarkMsgUnreadCountReportRequestBody mark_msg_unread_count_report = 2054;
+	MarkMsgGetUnreadCountRequestBody mark_msg_get_unread_count = 2055;
+	BatchUnmarkMessageRequestBody batch_unmark_message = 2056;
 
 }
 

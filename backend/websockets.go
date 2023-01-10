@@ -97,7 +97,7 @@ func (akun *Account) createUrl() *url.URL {
 	return &u
 }
 
-func (akun *Account) createPing() []byte {
+func (akun *Account) createV2Init() []byte {
 
 	data := &Request{
 		Headers:        map[string]string{},
@@ -109,7 +109,7 @@ func (akun *Account) createPing() []byte {
 		Cmd:            203,
 		Body: &RequestBody{
 			MessagesPerUserInitV2Body: &MessagesPerUserInitV2RequestBody{
-				Cursor: 0,
+				Cursor: akun.CursorChat,
 			},
 		},
 		Refer:      3,
@@ -140,7 +140,48 @@ func (akun *Account) createPing() []byte {
 	return hasil
 }
 
-func (akun *Account) CreateWebsocket() {
+
+func (akun *Account) createPing() []byte {
+
+	data := &Request{
+		Headers:        map[string]string{},
+		Cmd: 200,
+		Refer: 3,
+		Body: &RequestBody{
+			me
+		},
+		Token:      akun.Token,
+		DeviceId:   akun.DeviceId,
+		AuthType:       2,
+		DevicePlatform: "web",
+		InboxType:      0,
+		BuildNumber:    "12c929a:master",
+		SdkVersion:     "0.3.8",
+	}
+
+	payload, err := proto.Marshal(data)
+
+	frame := &Frame{
+		Seqid:       10001,
+		Logid:       10001,
+		Service:     10002,
+		PayloadType: "pb",
+		Method:      1,
+		Payload:     payload,
+	}
+
+	if err != nil {
+		panic("gagal create request websocket")
+	}
+
+	hasil, _ := proto.Marshal(frame)
+
+	log.Println("creating ping", fmt.Sprintf("%x", hasil))
+
+	return hasil
+}
+
+func (akun *Account) CreateWebsocket(reschan chan<- *Response) {
 	u := akun.createUrl()
 
 	requester := http.Header{
@@ -182,14 +223,20 @@ func (akun *Account) CreateWebsocket() {
 				return
 			}
 
-			truePayload := make([]byte, len(dataframe.Payload))
+			truePayload := make([]byte, len(dataframe.Payload)*10)
 
-			_, err = lz4.UncompressBlock(dataframe.Payload, truePayload)
+			size, err := lz4.UncompressBlock(dataframe.Payload, truePayload)
 			if err != nil {
-				log.Println(err)
+
+				for _, b := range truePayload {
+					fmt.Printf("%02x ", b)
+				}
+				fmt.Println()
+
+				panic(err)
 			}
 
-			fmt.Println("\ndecompressed Data:", truePayload)
+			// fmt.Println("\ndecompressed Data:", truePayload)
 
 			// for _, b := range dataframe.Payload {
 			// 	fmt.Printf("%02x ", b)
@@ -200,18 +247,20 @@ func (akun *Account) CreateWebsocket() {
 
 			var response Response
 
-			err = proto.Unmarshal(truePayload, &response)
+			err = proto.Unmarshal(truePayload[:size], &response)
 
 			if err != nil {
 				log.Println("parse response payload error:", err)
 				return
 			}
 
+			reschan <- &response
+			akun.handleRes(&response)
 			log.Println("message socket", &response)
 		}
 	}()
 
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
 
 	for {
@@ -234,8 +283,16 @@ func (akun *Account) CreateWebsocket() {
 	}
 }
 
-func StartWebsocketAll(akuns []*Account) {
+func (akun *Account) handleRes(res *Response) {
+	switch res.Cmd {
+	case 203:
+		akun.CursorChat = res.Body.MessagesPerUserInitV2Body.PerUserCursor
+		// log.Println(res.Body.MessagesPerUserInitV2Body.PerUserCursor)
+	}
+}
+
+func StartWebsocketAll(akuns []*Account, reschan chan<- *Response) {
 	for _, value := range akuns {
-		go value.CreateWebsocket()
+		go value.CreateWebsocket(reschan)
 	}
 }
