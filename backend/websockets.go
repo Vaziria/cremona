@@ -97,90 +97,6 @@ func (akun *Account) createUrl() *url.URL {
 	return &u
 }
 
-func (akun *Account) createV2Init() []byte {
-
-	data := &Request{
-		Headers:        map[string]string{},
-		AuthType:       2,
-		DevicePlatform: "web",
-		InboxType:      0,
-		BuildNumber:    "12c929a:master",
-		SdkVersion:     "0.3.8",
-		Cmd:            203,
-		Body: &RequestBody{
-			MessagesPerUserInitV2Body: &MessagesPerUserInitV2RequestBody{
-				Cursor: akun.CursorChat,
-			},
-		},
-		Refer:      3,
-		Token:      akun.Token,
-		DeviceId:   akun.DeviceId,
-		SequenceId: 10001,
-	}
-
-	payload, err := proto.Marshal(data)
-
-	frame := &Frame{
-		Seqid:       10001,
-		Logid:       10001,
-		Service:     10002,
-		PayloadType: "pb",
-		Method:      1,
-		Payload:     payload,
-	}
-
-	if err != nil {
-		panic("gagal create request websocket")
-	}
-
-	hasil, _ := proto.Marshal(frame)
-
-	log.Println("creating ping", fmt.Sprintf("%x", hasil))
-
-	return hasil
-}
-
-
-func (akun *Account) createPing() []byte {
-
-	data := &Request{
-		Headers:        map[string]string{},
-		Cmd: 200,
-		Refer: 3,
-		Body: &RequestBody{
-			me
-		},
-		Token:      akun.Token,
-		DeviceId:   akun.DeviceId,
-		AuthType:       2,
-		DevicePlatform: "web",
-		InboxType:      0,
-		BuildNumber:    "12c929a:master",
-		SdkVersion:     "0.3.8",
-	}
-
-	payload, err := proto.Marshal(data)
-
-	frame := &Frame{
-		Seqid:       10001,
-		Logid:       10001,
-		Service:     10002,
-		PayloadType: "pb",
-		Method:      1,
-		Payload:     payload,
-	}
-
-	if err != nil {
-		panic("gagal create request websocket")
-	}
-
-	hasil, _ := proto.Marshal(frame)
-
-	log.Println("creating ping", fmt.Sprintf("%x", hasil))
-
-	return hasil
-}
-
 func (akun *Account) CreateWebsocket(reschan chan<- *Response) {
 	u := akun.createUrl()
 
@@ -259,6 +175,8 @@ func (akun *Account) CreateWebsocket(reschan chan<- *Response) {
 			log.Println("message socket", &response)
 		}
 	}()
+
+	akun.CreateV2Init()
 
 	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()

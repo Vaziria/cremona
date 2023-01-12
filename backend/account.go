@@ -24,8 +24,8 @@ type Account struct {
 	DeviceId string    `json:"device_id"`
 	Token    string    `json:"tokenid"`
 
+	SequenceId uint64 `json:"sequence_id"`
 	CursorChat int64
-	SequenceId int64
 }
 
 func NewFromJson(pathname string) Account {

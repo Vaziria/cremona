@@ -33,6 +33,7 @@ export namespace backend {
 	    username: string;
 	    device_id: string;
 	    tokenid: string;
+	    sequence_id: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Account(source);
@@ -46,6 +47,7 @@ export namespace backend {
 	        this.username = source["username"];
 	        this.device_id = source["device_id"];
 	        this.tokenid = source["tokenid"];
+	        this.sequence_id = source["sequence_id"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

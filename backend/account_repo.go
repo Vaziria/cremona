@@ -47,7 +47,7 @@ func (repo *AccountRepo) Find(name string) (*Account, error) {
 		}
 	}
 
-	return nil, nil
+	return nil, errors.New("akun tidak ditemukan")
 }
 
 func (repo *AccountRepo) Delete(name string) error {
